@@ -13,6 +13,13 @@ spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
+  selector:
+    matchLabels:
+      app: {{ template "cassandra.name" . }}
+      release: "{{ .Release.Name }}"
+{{- if .Values.selector }}
+{{ toYaml .Values.selector | indent 6 }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -22,9 +29,6 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
     spec:
-{{- if .Values.selector }}
-{{ toYaml .Values.selector | indent 6 }}
-{{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
